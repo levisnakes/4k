@@ -24,6 +24,14 @@ if not gpu then
     return
 end
  
+-- Remove any displays left over from other scripts (e.g. the terminal
+-- example), otherwise they can sit on top of the monitor and hide ours.
+do
+    local old = gpu.listDisplays and gpu.listDisplays() or {}
+    for _, id in ipairs(old) do pcall(gpu.removeDisplay, id) end
+    if #old > 0 then print("Removed " .. #old .. " old display(s)") end
+end
+ 
 local display = gpu.autoDetectAndCreateDisplayWithResolution(RESOLUTION)
 if not display or display == -1 then
     printError("Failed to create display (is a monitor nearby?)")
